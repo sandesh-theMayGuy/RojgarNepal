@@ -11,21 +11,21 @@ RojgarNepal is a web-based freelancing platform that caters to the requirements 
 
 ### TO CONTRIBUTE:
 
-1.**Clone the repo
+1.Clone the repo
 
        git clone https://github.com/sandesh-theMayGuy/RojgarNepal.git
 
-2.**Make changes (your contribution)
+2.Make changes (your contribution)
 
-3.**Create a new branch
+3.Create a new branch
 
     git branch branchName
 
-4.**Checkout to the created branch
+4.Checkout to the created branch
 
        git checkout branchName 
     
-5.**Add,commit and push 
+5.Add,commit and push 
 
        git add fileName
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -33,9 +33,9 @@ RojgarNepal is a web-based freelancing platform that caters to the requirements 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
     git push origin branchName 
 
-6.**Create a pull request 
+6.Create a pull request 
 
-7.**Wait to get reviewed and merged
+7.Wait to get reviewed and merged
 
 
 
