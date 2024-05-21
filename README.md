@@ -12,7 +12,7 @@ RojgarNepal is a web-based freelancing platform that caters to the requirements 
 TO CONTRIBUTE:
 
     1. Clone the repo
-            -> git clone https://github.com/sandesh-theMayGuy/RojgarNepal.git
+            -> `git clone https://github.com/sandesh-theMayGuy/RojgarNepal.git`
 
     2. Make changes (your contribution)
 
