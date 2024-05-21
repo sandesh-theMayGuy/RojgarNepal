@@ -4,10 +4,10 @@ RojgarNepal is a web-based freelancing platform that caters to the requirements 
 
 #Color Palette
 
-<span style="color: #003285;">#003285</span>
-<span style="color: #2A629A;">#2A629A</span>
-<span style="color: #FF7F3E;">#FF7F3E</span>
-<span style="color: #FFDA78;">#FFDA78</span>
+<span style="color:#003285;">#003285</span>Primary Color
+<span style="color:#2A629A;">#2A629A</span>
+<span style="color:#FF7F3E;">#FF7F3E</span>
+<span style="color:#FFDA78;">#FFDA78</span>
 
 
 
