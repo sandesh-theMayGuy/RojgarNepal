@@ -13,7 +13,7 @@ RojgarNepal is a web-based freelancing platform that caters to the requirements 
 
 1. Clone the repo
    
-           -> git clone https://github.com/KothaChaiyo/KothaChaiyo.git
+           git clone https://github.com/KothaChaiyo/KothaChaiyo.git
    
 
 
@@ -21,20 +21,20 @@ RojgarNepal is a web-based freelancing platform that caters to the requirements 
 
 3 Create a new branch
 
-        -> git branch branchName
+         git branch branchName
 
 4. Checkout to the created branch
 
-        -> git checkout branchName 
+        git checkout branchName 
     
 4. Add,commit and push 
 
 
-                  -> git add fileName
-
-                -> git commit -m "Commit message"
-
-                -> git push origin branchName 
+                git add fileName
+-------------------------------------------------------------
+                git commit -m "Commit message"
+-------------------------------------------------------------
+                git push origin branchName 
 
 6. Create a pull request 
 
