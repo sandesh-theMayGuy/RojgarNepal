@@ -11,41 +11,31 @@ RojgarNepal is a web-based freelancing platform that caters to the requirements 
 
 ### TO CONTRIBUTE:
 
-1. **Clone the repo**
+1. Clone the repo
+        -> git clone https://github.com/KothaChaiyo/KothaChaiyo.git
 
-    <button onclick="copyToClipboard('git clone https://github.com/sandesh-theMayGuy/RojgarNepal.git')">Copy</button>
+2. Make changes (your contribution)
 
-2. **Make changes (your contribution)**
+3 Create a new branch
 
-3. **Create a new branch**
+        -> git branch branchName
 
-    <button onclick="copyToClipboard('git branch branchName')">Copy</button>
+4. Checkout to the created branch
 
-4. **Checkout to the created branch**
+        -> git checkout branchName 
+    
+4. Add,commit and push 
 
-    <button onclick="copyToClipboard('git checkout branchName')">Copy</button>
 
-4. **Add, commit, and push**
+        -> git add fileName
+   
+        -> git commit -m "Commit message"
 
-    <button onclick="copyToClipboard('git add fileName')">Copy</button>
-    <button onclick="copyToClipboard('git commit -m \"Commit message\"')">Copy</button>
-    <button onclick="copyToClipboard('git push origin branchName')">Copy</button>
+        -> git push origin branchName 
 
-5. **Create a pull request**
+6. Create a pull request 
 
-6. **Wait to get reviewed and merged**
-
-<script>
-    function copyToClipboard(text) {
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-        alert('Copied to clipboard: ' + text);
-    }
-</script>
+7. Wait to get reviewed and merged
 
 
 
