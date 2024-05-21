@@ -9,6 +9,33 @@ RojgarNepal is a web-based freelancing platform that caters to the requirements 
 - ![#FF7F3E](https://via.placeholder.com/15/FF7F3E/000000?text=+) `#FF7F3E`
 - ![#FFDA78](https://via.placeholder.com/15/FFDA78/000000?text=+) `#FFDA78`
 
+TO CONTRIBUTE:
+
+    1. Clone the repo
+            -> git clone https://github.com/sandesh-theMayGuy/RojgarNepal.git
+
+    2. Make changes (your contribution)
+
+    3 Create a new branch
+
+            -> git branch branchName
+
+    4. Checkout to the created branch
+
+            -> git checkout branchName 
+        
+    4. Add,commit and push 
+
+
+            -> git add fileName
+            -> git commit -m "Commit message"
+
+            -> git push origin branchName 
+
+    5. Create a pull request 
+
+    6. Wait to get reviewed and merged
+
 
 
 
