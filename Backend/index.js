@@ -16,6 +16,8 @@ import authenticate from "./middlewares/authenticate.js";
 
 import userRoute from "./routes/userRoute.js";
 
+import cors from "cors";
+
 
 const app = express();
 const PORT = process.env.PORT;
@@ -24,6 +26,10 @@ const PORT = process.env.PORT;
 // Middleware setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cors());
+
+
 
 
 
