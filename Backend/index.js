@@ -12,6 +12,9 @@ import Conversation from "./models/conversationModel.js";
 import Message from "./models/messageModel.js";
 import Booking from "./models/bookingModel.js";
 
+import authenticate from "./middlewares/authenticate.js";
+
+import userRoute from "./routes/userRoute.js";
 
 
 const app = express();
@@ -21,6 +24,7 @@ const PORT = process.env.PORT;
 // Middleware setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 
 
 
@@ -41,6 +45,13 @@ app.get("/",async (req,res)=>{
 
 })
 
+
+app.get('/protected', authenticate, (req, res) => {
+  res.json({ message: 'This route is protected' });
+});
+
+
+app.use("/user",userRoute);
 
 
 
@@ -143,6 +154,9 @@ async function createInstances() {
 
 
   createInstances();
+
+
+
 
 
 
