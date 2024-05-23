@@ -1,8 +1,3 @@
-// const express = require('express');
-// const router = express.Router();
-// const bcrypt = require('bcrypt');
-// const jwt = require('jsonwebtoken');
-// const User = require('../models/User');
 
 import express from "express";
 
@@ -28,7 +23,7 @@ let fullName,email,password,profileImage,phoneNo,location,userType;
 
 
 
-// const twilioClient = new twilio('SID : SK1c10207290836549d2ab86de7118774f', 'SECRET : LO2bzyXR0k0hFVaJyaOwaqvtOP0ug7lk');
+
 
 // In-memory store for OTPs
 const otpStore = new Map();
@@ -43,7 +38,7 @@ router.post('/signup',  async (req, res) => {
      location = req.body.location;
      userType = req.body.userType;
 
-//   const { fullName, email, password, profileImage, phoneNo, location, userType } = req.body;
+
   
   const validation = authController.validateInput(fullName,email,password,profileImage,phoneNo,location,userType);
 
@@ -94,11 +89,6 @@ router.post('/signup',  async (req, res) => {
 
 
 
-  // Create new instance in User table
- 
-
-
-  // if user type is freelancer, he needs to add service details as well
 
 
 });
@@ -139,7 +129,7 @@ router.post('/verify-otp', async (req, res) => {
   
   
         // Redirect based on user type
-        
+
         if (userType == 'Freelancer') {
   
             res.status(200).json({ message: 'OTP verified and user created succesfully, redirecting to Services page', redirectUrl: 'user/service-details' });
