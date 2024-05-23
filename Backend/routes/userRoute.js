@@ -7,8 +7,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 
-
-import twilio from "twilio";
 import nodemailer from "nodemailer";
 import otpGenerator from "otp-generator";
 
