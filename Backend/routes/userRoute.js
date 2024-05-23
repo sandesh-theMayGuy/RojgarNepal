@@ -14,6 +14,15 @@ import AuthController from "../controllers/authController.js";
 
 import emailTransporter from "../config/email.js";
 
+import multer from "multer";
+import path from "path";
+
+
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+    
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 
 const authController = new AuthController();
 
@@ -26,19 +35,22 @@ let fullName,email,password,profileImage,phoneNo,location,userType;
 // In-memory store for OTPs
 const otpStore = new Map();
 
+
+
+
+
+
 // Signup Route
 router.post('/signup',  async (req, res) => {
      fullName = req.body.fullName;
      email = req.body.email;
      password = req.body.password;
-     profileImage = req.body.profileImage;
+    
      phoneNo = req.body.phoneNo;
      location = req.body.location;
      userType = req.body.userType;
 
-
-  
-  const validation = authController.validateInput(fullName,email,password,profileImage,phoneNo,location,userType);
+  const validation = authController.validateInput(fullName,email,password,phoneNo,location,userType);
 
 
   if (!validation.valid) {
@@ -93,6 +105,8 @@ router.post('/signup',  async (req, res) => {
 
 
 
+
+
 router.post('/verify-otp', async (req, res) => {
     const { emailOtp } = req.body;
   
@@ -123,17 +137,10 @@ router.post('/verify-otp', async (req, res) => {
           location,
           userType
         });
-
-  
   
         // Redirect based on user type
 
-        if (userType == 'Freelancer') {
-  
-            res.status(200).json({ message: 'OTP verified and user created succesfully, redirecting to Services page', redirectUrl: 'user/service-details' });
-          } else if (userType == 'Client') {
-            res.status(200).json({ message: 'OTP verified and user created succesfully, redirecting to Client page', redirectUrl: '/client-dashboard' });
-          }
+        res.status(200).json({ message: 'OTP verified and user created succesfully, redirecting to photo upload page', redirectUrl: 'user/profile-photo' });
        
       } catch (error) {
         console.error(error);
@@ -146,6 +153,58 @@ router.post('/verify-otp', async (req, res) => {
   
 
 
+
+
+  //Photo upload and handling logic
+
+
+
+// Define storage for uploaded files
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+ 
+    cb(null,path.join(__dirname,"../uploads/"));
+
+      
+    },
+    filename: function (req, file, cb) {
+      cb(null, email) // File name
+    }
+  })
+  
+  // Define custom file filter for image files
+  const imageFilter = function (req, file, cb) {
+    // Accept image files with jpg, jpeg, or png extensions
+    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+      return cb(new Error('Only image files are allowed'), false);
+    }
+    cb(null, true);
+  }
+  
+  // Initialize Multer with the storage and file filter configuration
+  const upload = multer({ 
+    storage: storage,
+    fileFilter: imageFilter
+  });
+
+
+
+  router.post('/upload', upload.single('image'), (req, res) => {
+    // Check if file is uploaded
+    if (!req.file) {
+      return res.status(400).send('No file uploaded');
+    }
+  
+    if (userType == 'Freelancer') {
+  
+        res.status(200).json({ message: 'Image uploaded succesfully, redirecting to Services page', redirectUrl: 'user/service-details' });
+      } else if (userType == 'Client') {
+        res.status(200).json({ message: 'Image uploaded succesfully, redirecting to Client page', redirectUrl: '/client-dashboard' });
+      }
+
+  });
+
+  
 
 
 
