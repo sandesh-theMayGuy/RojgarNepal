@@ -50,7 +50,7 @@ router.post('/signup',  async (req, res) => {
      location = req.body.location;
      userType = req.body.userType;
 
-  const validation = authController.validateInput(fullName,email,password,phoneNo,location,userType);
+  const validation = await authController.validateInput(fullName,email,password,phoneNo,location,userType);
 
 
   if (!validation.valid) {

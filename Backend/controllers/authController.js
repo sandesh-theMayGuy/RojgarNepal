@@ -1,6 +1,8 @@
+import User from "../models/userModel.js";
+
 class authController{
 
-     validateInput = (fullName, email, password, phoneNo, location, userType) => {
+     validateInput = async  (fullName, email, password, phoneNo, location, userType) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const phoneRegex = /^[0-9]{10}$/;
         const passwordRegex = /^(?=.*\d)[A-Za-z\d]{5,}$/;
@@ -14,6 +16,9 @@ class authController{
         if(fullName=="") return {valid:false,message:"Name can't be empty"};
         if(userType=="") return{valid:false,message:"User type can't be empty"};
 
+        const userCount = await User.count({ where: { email } });
+
+        if(userCount!=0) return{valid:false,message:"User with provided email already exists"};
 
         return { valid: true };
       };
