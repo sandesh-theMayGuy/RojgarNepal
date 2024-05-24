@@ -168,7 +168,7 @@ const storage = multer.diskStorage({
       
     },
     filename: function (req, file, cb) {
-      cb(null, email) // File name
+      cb(null, `${userType}-${email}`) // File name
     }
   })
   
@@ -211,21 +211,21 @@ const storage = multer.diskStorage({
 
 // Login Route
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password , userType } = req.body;
 
   try {
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ where: { email ,userType} });
     if (!user) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return res.status(401).json({ error: 'Invalid email' });
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return res.status(401).json({ error: 'Invalid password' });
     }
 
     const token = jwt.sign({ userId: user.uid }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
-    res.json({ token });
+    res.json({ token});
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });

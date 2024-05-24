@@ -16,9 +16,24 @@ class authController{
         if(fullName=="") return {valid:false,message:"Name can't be empty"};
         if(userType=="") return{valid:false,message:"User type can't be empty"};
 
-        const userCount = await User.count({ where: { email } });
+        // const userCount = await User.count({ where: { email,userType } });
 
-        if(userCount!=0) return{valid:false,message:"User with provided email already exists"};
+        // if(userCount!=0) return{valid:false,message:"User with provided email already exists"};
+
+
+        try {
+          // Check if the user already has an account of the same type
+          const existingUser = await User.findOne({ where: { email, userType } });
+      
+          if (existingUser) {
+           return  {valid:false,message:'User already has an account with this type'};
+          }
+
+          
+     
+        } catch (error) {
+          res.status(500).json({ message: error.message });
+        }
 
         return { valid: true };
       };
