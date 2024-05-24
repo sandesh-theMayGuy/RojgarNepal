@@ -41,8 +41,9 @@ const Booking = sequelize.define('Booking', {
 });
 
 
+User.hasMany(Booking, { foreignKey: 'uid' });
+Service.hasMany(Booking, { foreignKey: 'sid' });
 Booking.belongsTo(User, { foreignKey: 'uid' });
 Booking.belongsTo(Service, { foreignKey: 'sid' });
-
 
 export default Booking;

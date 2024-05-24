@@ -41,7 +41,6 @@ const JobPosting = sequelize.define('JobPosting', {
 });
 
 JobPosting.belongsTo(User, { foreignKey: 'uid' });
-
-
+User.hasMany(JobPosting, { foreignKey: 'uid'}); 
 
   export default JobPosting;

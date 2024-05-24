@@ -36,6 +36,7 @@ const Message = sequelize.define('Message', {
   timestamps: false
 });
 
+Conversation.hasMany(Message, { foreignKey: 'cvid'});
 Message.belongsTo(Conversation, { foreignKey: 'cvid' });
 Message.belongsTo(User, {as:'sender', foreignKey: 'senderId' });
 
