@@ -31,9 +31,6 @@ app.use(cors());
 
 
 
-
-
-
 // Synchronize all models
 sequelize.sync()
   .then(() => {
@@ -58,8 +55,6 @@ app.get('/protected', authenticate, (req, res) => {
 
 
 app.use("/user",userRoute);
-
-
 
 
 
