@@ -1,4 +1,4 @@
-// const jwt = require('jsonwebtoken');
+//Checks whether the incoming request is authenticated (Makes sure the incoming request contains valid token in header)
 
 import jwt from "jsonwebtoken";
 
@@ -10,6 +10,8 @@ const authenticate = (req, res, next) => {
   }
 
   try {
+
+    //decode the jwt token and check if it is a valid token 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     req.userId = decoded.userId;
     next();

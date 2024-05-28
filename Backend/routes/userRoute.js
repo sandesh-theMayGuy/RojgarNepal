@@ -7,15 +7,21 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 
-import nodemailer from "nodemailer";
-import otpGenerator from "otp-generator";
 
 import AuthController from "../controllers/authController.js";
+import UserController from "../controllers/userController.js";
+import FreelancerController from "../controllers/freelancerController.js";
+import MediaController from "../controllers/mediaController.js";
 
-import emailTransporter from "../config/email.js";
+const authController = new AuthController();
+const userController = new UserController();
+const freelancerController = new FreelancerController();
+const mediaController = new MediaController();
+
 
 import multer from "multer";
 import path from "path";
+import upload from "../config/media.js";
 
 
 import { dirname } from 'path';
@@ -24,18 +30,9 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 
-const authController = new AuthController();
-
-let fullName,email,password,profileImage,phoneNo,location,userType;
 
 
-
-
-
-// In-memory store for OTPs
-const otpStore = new Map();
-
-
+let fullName,email,password,confirmPassword,profileImage,phoneNo,location,userType;
 
 
 
@@ -45,191 +42,82 @@ router.post('/signup',  async (req, res) => {
      fullName = req.body.fullName;
      email = req.body.email;
      password = req.body.password;
-    
+     confirmPassword = req.body.confirmPassword;
      phoneNo = req.body.phoneNo;
      location = req.body.location;
      userType = req.body.userType;
 
-  const validation = await authController.validateInput(fullName,email,password,phoneNo,location,userType);
-
+  const validation = await authController.validateInput(fullName,email,password,confirmPassword,phoneNo,location,userType);
 
   if (!validation.valid) {
-     res.status(400).json({ error: validation.message });
+   return  res.status(400).json({ success:false,message: validation.message });
+  }else{
+    
+    const status = await authController.sendMail(email);
+
+    if(status.success){
+     return res.status(200).json({success:true,message:"OTP sent succesfully to your email address"});
+    }else{
+      return res.status(400).json({sucess:true,message:"Could not send OTP to your email address"});
+    }
+  
   }
 
 
-
-  //2. send OTP to email 
-
-
-  const emailOtp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
-
-
-  const hashedEmailOtp = await bcrypt.hash(emailOtp, 10);
-
-
-  otpStore.set(email, { emailOtp: hashedEmailOtp });
-
-  const mailOptions = {
-    from: process.env.EMAIL_ADDRESS,
-    to: email,
-    subject: 'Your Email OTP Code',
-    text: `Your OTP code is ${emailOtp}`
-  };
-
-
-
-  emailTransporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error(error);
-       res.status(500).json({ error: 'Failed to send email OTP' });
-    }
-
-
-
-
-    // res.status(200).json({status:success,message:"OTP sent to your email address"});
-
-    res.status(200).json({status:"success",message:"OTP sent succesfully to your email address"});
-
-  });
-
-
-
-
-
-
-
-
 });
-
-
 
 
 
 router.post('/verify-otp', async (req, res) => {
-    const { emailOtp } = req.body;
   
-    const storedOtps = otpStore.get(email);
-    if (!storedOtps) {
-      return res.status(400).json({ error: 'OTP not found or expired' });
-    }
   
-    const isEmailOtpValid = await bcrypt.compare(emailOtp, storedOtps.emailOtp);
+  const { emailOtp } = req.body;
 
-  
-    if (!isEmailOtpValid) {
-      return res.status(400).json({ error: 'Invalid OTP' });
-    }
-  
-    otpStore.delete(email);
-
-
-
-    try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await User.create({
-          fullName,
-          email,
-          password: hashedPassword,
-          profileImage,
-          phoneNo,
-          location,
-          userType
-        });
-  
-        // Redirect based on user type
-
-        res.status(200).json({ message: 'OTP verified and user created succesfully, redirecting to photo upload page', redirectUrl: 'user/profile-photo' });
-       
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-      }
-
-    
-   
-  });
-  
-
-
-
-
-  //Photo upload and handling logic
-
-
-
-// Define storage for uploaded files
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
- 
-    cb(null,path.join(__dirname,"../uploads/"));
-
-      
-    },
-    filename: function (req, file, cb) {
-      cb(null, `${userType}-${email}`) // File name
-    }
-  })
-  
-  // Define custom file filter for image files
-  const imageFilter = function (req, file, cb) {
-    // Accept image files with jpg, jpeg, or png extensions
-    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-      return cb(new Error('Only image files are allowed'), false);
-    }
-    cb(null, true);
+  if (!emailOtp) {
+    return res.status(400).json({ success: false, message: "Please type OTP sent to your email" });
   }
-  
-  // Initialize Multer with the storage and file filter configuration
-  const upload = multer({ 
-    storage: storage,
-    fileFilter: imageFilter
-  });
-
-
-
-  router.post('/upload', upload.single('image'), (req, res) => {
-    // Check if file is uploaded
-    if (!req.file) {
-      return res.status(400).send('No file uploaded');
-    }
-  
-    if (userType == 'Freelancer') {
-  
-        res.status(200).json({ message: 'Image uploaded succesfully, redirecting to Services page', redirectUrl: 'user/service-details' });
-      } else if (userType == 'Client') {
-        res.status(200).json({ message: 'Image uploaded succesfully, redirecting to Client page', redirectUrl: '/client-dashboard' });
-      }
-
-  });
-
-  
-
-
-
-
-// Login Route
-router.post('/login', async (req, res) => {
-  const { email, password , userType } = req.body;
 
   try {
-    const user = await User.findOne({ where: { email ,userType} });
-    if (!user) {
-      return res.status(401).json({ error: 'Invalid email' });
+    const status = await authController.verifyOTP(emailOtp);
+
+    if(!status.success){
+      return res.status(400).json({success:false,message:status.message});
     }
 
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      return res.status(401).json({ error: 'Invalid password' });
+    const userStatus = await userController.createUser(fullName, email, password, profileImage, phoneNo, location, userType);
+
+    if (!userStatus.success) {
+      return res.status(500).json({ success: false, message: userStatus.message });
     }
 
-    const token = jwt.sign({ userId: user.uid }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
-    res.json({ token});
+    return res.status(200).json({ 
+      success: true, 
+      message: 'OTP verified and user created successfully'
+    });
   } catch (error) {
+    // In case of unexpected errors, send a generic error response
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    if (!res.headersSent) {
+      return res.status(500).json({ success: false, message: 'Internal server error' });
+    }
   }
-});
+
+  });
+  
+
+
+
+  //Media Route (to handle image uploads and management)
+  router.post('/upload', upload.single('image'),mediaController.uploadImage);
+
+  
+  //Service Route 
+  router.post('/service', freelancerController.createService);
+  
+// Login Route
+router.post('/login',userController.logInUser);
+
 
 export default router;
+
+export {fullName,email,password,confirmPassword,profileImage,phoneNo,location,userType};
