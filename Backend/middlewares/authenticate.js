@@ -1,23 +1,33 @@
-//Checks whether the incoming request is authenticated (Makes sure the incoming request contains valid token in header)
-
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
 
 const authenticate = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ success: false, authorized: false, message: 'Unauthorized user: No token provided' });
+  }
+
+  const token = authHeader.split(' ')[1];
 
   if (!token) {
-    return res.status(401).json({ error: 'Unauthorized' });
+    return res.status(401).json({ success: false, authorized: false, message: 'Unauthorized user: Invalid token format' });
   }
 
   try {
-
-    //decode the jwt token and check if it is a valid token 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     req.userId = decoded.userId;
+    req.userType = decoded.userType;
     next();
   } catch (error) {
-    console.error(error);
-    res.status(401).json({ error: 'Unauthorized' });
+    console.error('JWT verification error:', error);
+    // Check for specific JWT errors and respond with a proper message
+    if (error instanceof jwt.JsonWebTokenError) {
+      return res.status(401).json({ success: false, authozied:false, message: 'Invalid or malformed token' });
+    } else if (error instanceof jwt.TokenExpiredError) {
+      return res.status(401).json({ success: false, authoried:false, message: 'Token has expired' });
+    } else {
+      return res.status(500).json({ success: false,authorized:false, message: 'Internal server error' });
+    }
   }
 };
 

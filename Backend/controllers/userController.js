@@ -2,6 +2,11 @@ import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+import AuthController from "./authController.js";
+
+const authController = new AuthController();
+
+
 
 class UserController{
 
@@ -24,7 +29,7 @@ class UserController{
 
 
     
-        return{success:true,message:"OTP verified and User Created Succesfully"};
+        return{success:true,uid:user.uid,email:user.email,fullName:user.fullName,userType:user.userType,message:"OTP verified and User Created Succesfully"};
 
       } catch (error) {
         console.error(error);
@@ -72,16 +77,22 @@ class UserController{
         if (!user) {
           return  res.status(401).json({ success:false,message: 'Invalid email' });
         }
-    
+        
         const isValidPassword = await bcrypt.compare(password, user.password);
         if (!isValidPassword) {
           return  res.status(401).json({success:false, message: 'Invalid password' });
         }
-    
+
+
+        const token = await authController.attachToken(user.uid,user.userType);
+        // const payload = {
+        //   userId:user.uid,
+        //   userType:user.userType
+        // }
        
-        const token = jwt.sign({ userId: user.uid }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+        // const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
         
-        return res.json({ success:true,token:token,userId:user.uid});
+        return res.json({ success:true,token:token,userId:user.uid,email:user.email,fullName:user.fullName});
       } catch (error) {
         console.error(error);
        return  res.status(500).json({ success:false,message: 'Internal Server Error' });

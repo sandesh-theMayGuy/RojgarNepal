@@ -1,5 +1,8 @@
-import UserController from "./userController.js";
+
 import { userType , email } from "../routes/userRoute.js";
+
+
+import UserController from "./userController.js";
 
 const userController = new UserController();
 
