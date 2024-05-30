@@ -13,10 +13,16 @@ import Message from "./models/messageModel.js";
 import Booking from "./models/bookingModel.js";
 
 import authenticate from "./middlewares/authenticate.js";
+import authorize from "./middlewares/authorize.js";
 
 import userRoute from "./routes/userRoute.js";
+import clientRoute from "./routes/clientRoute.js";
+import freelancerRoute from "./routes/freelancerRoute.js";
 
 import cors from "cors";
+
+
+
 
 
 const app = express();
@@ -55,6 +61,11 @@ app.get('/protected', authenticate, (req, res) => {
 
 
 app.use("/user",userRoute);
+
+
+app.use("/client",clientRoute);
+app.use("/freelancer",freelancerRoute);
+
 
 
 
@@ -181,3 +192,4 @@ app.listen(PORT,(async err=>{
           }
     }
 }))
+

@@ -1,4 +1,4 @@
-
+//basic imports
 import express from "express";
 
 const router = express.Router();
@@ -6,17 +6,6 @@ import bcrypt from "bcrypt";
 
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
-
-
-import AuthController from "../controllers/authController.js";
-import UserController from "../controllers/userController.js";
-import FreelancerController from "../controllers/freelancerController.js";
-import MediaController from "../controllers/mediaController.js";
-
-const authController = new AuthController();
-const userController = new UserController();
-const freelancerController = new FreelancerController();
-const mediaController = new MediaController();
 
 
 import multer from "multer";
@@ -29,6 +18,25 @@ import { fileURLToPath } from 'url';
     
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+
+//importing controllers
+
+import AuthController from "../controllers/authController.js";
+import UserController from "../controllers/userController.js";
+import FreelancerController from "../controllers/freelancerController.js";
+import MediaController from "../controllers/mediaController.js";
+
+//instantiating controller classes
+
+const authController = new AuthController();
+const userController = new UserController();
+const freelancerController = new FreelancerController();
+const mediaController = new MediaController();
+
+//importing middlewares
+
+import authenticate from "../middlewares/authenticate.js";
+import authorize from "../middlewares/authorize.js";
 
 
 
@@ -84,16 +92,33 @@ router.post('/verify-otp', async (req, res) => {
       return res.status(400).json({success:false,message:status.message});
     }
 
-    const userStatus = await userController.createUser(fullName, email, password, profileImage, phoneNo, location, userType);
+    const user = await userController.createUser(fullName, email, password, profileImage, phoneNo, location, userType);
 
-    if (!userStatus.success) {
-      return res.status(500).json({ success: false, message: userStatus.message });
+
+    if (!user.success) {
+      return res.status(500).json({ success: false, message: user.message });
     }
 
-    return res.status(200).json({ 
-      success: true, 
-      message: 'OTP verified and user created successfully'
-    });
+    const token = await authController.attachToken(user.uid,user.userType);
+
+    // const payload = {
+    //   userId: user.uid,
+    //   userType:user.userType 
+    // };
+
+    // const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+
+    // return res.status(200).json({ 
+    //   success: true, 
+    //   message: 'OTP verified and user created successfully',
+    //   uid:userStatus.uid,
+    //   email:userStatus.email,
+    //   fullName:userStatus.fullName
+    // });
+
+    return res.json({ success:true,message:"OTP verified and user created succesfully",token:token,userId:user.uid,email:user.email,fullName:user.fullName});
+
+
   } catch (error) {
     // In case of unexpected errors, send a generic error response
     console.error(error);
@@ -112,7 +137,7 @@ router.post('/verify-otp', async (req, res) => {
 
   
   //Service Route 
-  router.post('/service', freelancerController.createService);
+  router.post('/service', authenticate,authorize(['Freelancer']) ,freelancerController.createService);
   
 // Login Route
 router.post('/login',userController.logInUser);

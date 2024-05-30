@@ -9,7 +9,7 @@ createService = async (req,res)=>{
     const { userId, serviceName, serviceType, description, rate } = req.body;
   
     // Validate input
-    if (!userId || !serviceName || !serviceType) {
+    if (!userId || !serviceName || !serviceType || !description || !rate ) {
       return res.status(400).json({ success: false, message: "Please provide all required fields" });
     }
 

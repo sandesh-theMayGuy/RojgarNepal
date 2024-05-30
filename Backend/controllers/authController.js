@@ -12,6 +12,9 @@ import bcrypt from "bcrypt";
 
 import { email } from "../routes/userRoute.js";
 
+import jwt from "jsonwebtoken";
+
+import "dotenv/config";
 
 
 // In-memory store for OTPs (Later used to check if the OTP entered by user is valid)
@@ -139,6 +142,21 @@ class AuthController{
     return({success:true,message:"Email verified succesfully"});
 
       }
+
+
+    attachToken = async (userId, userType)=>{
+      const payload = {
+        userId: userId,
+        userType:userType 
+      };
+  
+      const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+
+      return token;
+      
+    }
+
+    
 
 
 }
