@@ -20,9 +20,10 @@ import clientRoute from "./routes/clientRoute.js";
 import freelancerRoute from "./routes/freelancerRoute.js";
 
 import cors from "cors";
+import FreelancerController from "./controllers/freelancerController.js";
 
 
-
+const freelancerController = new FreelancerController();
 
 
 const app = express();
@@ -49,6 +50,7 @@ sequelize.sync()
 
 
 
+
 app.get("/",async (req,res)=>{
     res.send("Hello World");
 
@@ -59,8 +61,24 @@ app.get('/protected', authenticate, (req, res) => {
   res.json({ message: 'This route is protected' });
 });
 
-
 app.use("/user",userRoute);
+
+
+
+app.get("/freelancers",async (req,res)=>{
+    const service = req.body.service;
+
+    const result = await freelancerController.getFreelancersByService(service);
+
+    if(!result){
+      res.status(400).json({success:false,message:"Could not find freelancers"});
+    }
+
+    else{
+      console.log(result);
+      res.status(200).json({success:true,data:{result}});
+    }
+})
 
 
 app.use("/client",clientRoute);
@@ -100,9 +118,14 @@ async function createInstances() {
         serviceName: 'Web Development',
         serviceType: 'IT',
         description: 'Full stack web development service.',
-        rate: 50,
+        rate: "50 per project",
         isAvailable: true,
-        uid: freelancer.uid // Link service to the freelancer
+        uid: freelancer.uid, // Link service to the freelancer
+        location:"Kathmandu",
+        latitude:27.700769,
+        longitude:85.300140
+     
+  
       });
   
       console.log('Service created!');

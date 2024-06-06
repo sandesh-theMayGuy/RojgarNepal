@@ -92,7 +92,7 @@ class UserController{
        
         // const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
         
-        return res.json({ success:true,token:token,userId:user.uid,email:user.email,fullName:user.fullName});
+        return res.json({ success:true,token:token,userId:user.uid,email:user.email,fullName:user.fullName,userType:user.userType});
       } catch (error) {
         console.error(error);
        return  res.status(500).json({ success:false,message: 'Internal Server Error' });

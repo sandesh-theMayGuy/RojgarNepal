@@ -25,9 +25,9 @@ class MediaController  {
           if (userType == 'Freelancer') {
 
 
-              return res.status(200).json({ success:true,message: 'Image uploaded succesfully, redirecting to Services page', redirectUrl: 'user/service-details' });
+              return res.status(200).json(  );
             } else if (userType == 'Client') {
-             return res.status(200).json({ success:true,message: 'Image uploaded succesfully, redirecting to Client page', redirectUrl: '/client-dashboard' });
+             return res.status(200).json({ success:true,message: 'Image uploaded succesfully, redirecting to Client page'});
             }
         
             }
