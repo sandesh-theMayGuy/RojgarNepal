@@ -116,7 +116,7 @@ router.post('/verify-otp', async (req, res) => {
     //   fullName:userStatus.fullName
     // });
 
-    return res.json({ success:true,message:"OTP verified and user created succesfully",token:token,userId:user.uid,email:user.email,fullName:user.fullName});
+    return res.json({ success:true,message:"OTP verified and user created succesfully",token:token,userId:user.uid,email:user.email,fullName:user.fullName, userType: user.userType});
 
 
   } catch (error) {

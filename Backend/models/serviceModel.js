@@ -22,7 +22,7 @@ const Service = sequelize.define('Service', {
     allowNull: true
   },
   rate: {
-    type: DataTypes.FLOAT,
+    type: DataTypes.STRING,
     allowNull: true
   },
   isAvailable: {
@@ -36,7 +36,20 @@ const Service = sequelize.define('Service', {
       model: User,
       key: 'uid'
     }
+  },
+  location:{
+    type: DataTypes.STRING,
+    allowNull:false
+  },
+  latitude:{
+    type:DataTypes.FLOAT,
+    allowNull:true
+  },
+  longitude:{
+    type:DataTypes.FLOAT,
+    allowNull:true
   }
+
 }, {
   timestamps: false
 });

@@ -22,9 +22,9 @@ const authenticate = (req, res, next) => {
     console.error('JWT verification error:', error);
     // Check for specific JWT errors and respond with a proper message
     if (error instanceof jwt.JsonWebTokenError) {
-      return res.status(401).json({ success: false, authozied:false, message: 'Invalid or malformed token' });
+      return res.status(401).json({ success: false, authorized:false, message: 'Invalid or malformed token' });
     } else if (error instanceof jwt.TokenExpiredError) {
-      return res.status(401).json({ success: false, authoried:false, message: 'Token has expired' });
+      return res.status(401).json({ success: false, authorized:false, message: 'Token has expired' });
     } else {
       return res.status(500).json({ success: false,authorized:false, message: 'Internal server error' });
     }
